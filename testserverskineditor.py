@@ -5,18 +5,15 @@ import io, random, json, base64
 # ─── Page Config & Branding ────────────────────────────────────────────────
 st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
 
-# Favicon + Sidebar logo
-try:
-    logo_path = ".streamlit/static/images/logo-surviv.png"
-    logo_bytes = open(logo_path, "rb").read()
-    logo_b64 = base64.b64encode(logo_bytes).decode()
-    st.markdown(
-        f"<link rel='icon' href='data:image/png;base64,{logo_b64}' />",
-        unsafe_allow_html=True
-    )
-    st.sidebar.image(logo_path, width=100)
-except FileNotFoundError:
-    pass
+# Favicon + Sidebar logo (served from /static/)
+st.markdown(
+    "<link rel='icon' href='/static/logo-surviv.png' />",
+    unsafe_allow_html=True
+)
+st.sidebar.markdown(
+    "<img src='/static/logo-surviv.png' width='100'/>",
+    unsafe_allow_html=True
+)
 
 # Blurred background behind UI only
 try:
@@ -28,20 +25,18 @@ try:
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: url('/static/images/main_splash_rivers.png') no-repeat center;
+            background: url('/static/main_splash_rivers.png') no-repeat center;
             background-size: cover;
             filter: blur(8px) brightness(0.7);
             z-index: -1;
           }
-          /* keep UI panels transparent to show background */
-          /* remove any background override */
         </style>
         """, unsafe_allow_html=True
     )
-except FileNotFoundError:
+except:
     pass
 
-st.title("🎨 Survev.io Skin Editor")
+st.title("🎨 Survev.io Skin Editor")("🎨 Survev.io Skin Editor")
 st.write("Use the sidebar to customize and see live updates immediately.")
 
 # ─── Helpers ────────────────────────────────────────────────────────────────
