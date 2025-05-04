@@ -43,10 +43,11 @@ try:
         </style>
         """, unsafe_allow_html=True
     )
-except:
+except FileNotFoundError:
+    pass
     pass
 
-st.title("🎨 Survev.io Skin Editor")("🎨 Survev.io Skin Editor")
+st.title("🎨 Survev.io Skin Editor")
 st.write("Use tabs below to configure, preview, or export your skin.")
 
 # Utility: random color
