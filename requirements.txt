@@ -1,2 +1,5 @@
 streamlit
-ipywidgets
+Pillow
+streamlit-drawable-canvas
+streamlit-aggrid
+streamlit-lottie
