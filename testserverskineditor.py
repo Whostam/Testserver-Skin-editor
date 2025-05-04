@@ -6,7 +6,10 @@ import io, random, json
 st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
 
 # Sidebar logo served from top-level static folder
-st.sidebar.image('/static/logo.png', width=120)
+st.sidebar.markdown(
+    "<img src='/static/logo.png' width='120' />",
+    unsafe_allow_html=True
+)
 
 # Blurred fullscreen background via CSS from static folder
 st.markdown(
