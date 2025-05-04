@@ -153,8 +153,20 @@ if bg_file:
     bg_img=Image.open(bg_file).convert('RGBA').resize((1024,1024),Image.Resampling.LANCZOS)
 canvas=Image.new('RGBA',(1024,1024),(0,0,0,0))
 for name,f,c1,c2,p,pc,sw,dr,sp,dw,bl,up,alpha in parts:
-    r=240 if name=='Backpack' else(280 if name=='Body' else100)
-    if name=='Backpack': centers=[(512,512+by)]
+    # Determine radius
+    if name == 'Backpack':
+        r = 240
+    elif name == 'Body':
+        r = 280
+    else:
+        r = 100
+    # Determine centers
+    if name == 'Backpack':
+        centers = [(512, 512 + by)]
+    elif name == 'Body':
+        centers = [(512, 512)]
+    else:
+        centers = [(512 - hx, 512 + hy), (512 + hx, 512 + hy)]=[(512,512+by)]
     elif name=='Body':    centers=[(512,512)]
     else:                 centers=[(512-hx,512+hy),(512+hx,512+hy)]
     fill_img=get_fill_image(f,c1,c2,2*r).convert('RGBA')
