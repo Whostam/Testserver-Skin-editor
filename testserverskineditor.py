@@ -4,14 +4,18 @@ import io, random, json, base64
 
 # ─── Page Config & Branding ────────────────────────────────────────────────
 st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
-# Favicon and logo
-logo_bytes = open('logo-surviv.png','rb').read()
-logo_b64 = base64.b64encode(logo_bytes).decode()
-st.markdown(
-    f"<link rel='icon' href='data:image/png;base64,{logo_b64}' />",
-    unsafe_allow_html=True
-)
-st.sidebar.image('logo-surviv.png', use_column_width=True)
+# Favicon and logo (optional)
+try:
+    logo_bytes = open('logo-surviv.png','rb').read()
+    logo_b64 = base64.b64encode(logo_bytes).decode()
+    st.markdown(
+        f"<link rel='icon' href='data:image/png;base64,{logo_b64}' />",
+        unsafe_allow_html=True
+    )
+    st.sidebar.image('logo-surviv.png', use_column_width=True)
+except FileNotFoundError:
+    # skip if asset missing
+    pass('logo-surviv.png', use_column_width=True)
 # Blurred background via CSS
 st.markdown(
     """
