@@ -1,0 +1,6 @@
+.streamlit/
+  static/
+    logo-surviv.png
+    main_splash_rivers.png
+app.py
+requirements.txt
