@@ -160,16 +160,16 @@ for name,f,c1,c2,p,pc,sw,dr,sp,dw,bl,up,alpha in parts:
         r = 280
     else:
         r = 100
-    # Determine centers
+        # Determine centers
     if name == 'Backpack':
         centers = [(512, 512 + by)]
     elif name == 'Body':
         centers = [(512, 512)]
     else:
-        centers = [(512 - hx, 512 + hy), (512 + hx, 512 + hy)]=[(512,512+by)]
-    elif name=='Body':    centers=[(512,512)]
-    else:                 centers=[(512-hx,512+hy),(512+hx,512+hy)]
-    fill_img=get_fill_image(f,c1,c2,2*r).convert('RGBA')
+        centers = [(512 - hx, 512 + hy), (512 + hx, 512 + hy)]
+
+    # Generate base fill image
+    fill_img = get_fill_image(f, c1, c2, 2*r).convert('RGBA')(f,c1,c2,2*r).convert('RGBA')
     pattern=None
     if p=='Stripes':  pattern=make_stripes(2*r,pc,sw)
     elif p=='Spots':  pattern=make_spots(2*r,pc,dr,sp)
