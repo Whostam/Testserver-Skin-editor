@@ -36,7 +36,7 @@ try:
 except:
     pass
 
-st.title("🎨 Survev.io Skin Editor")("🎨 Survev.io Skin Editor")
+st.title("🎨 Survev.io Skin Editor")
 st.write("Use the sidebar to customize and see live updates immediately.")
 
 # ─── Helpers ────────────────────────────────────────────────────────────────
