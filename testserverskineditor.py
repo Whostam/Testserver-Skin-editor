@@ -7,7 +7,7 @@ st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
 
 # Sidebar logo via HTML (served from /static/)
 st.sidebar.markdown(
-    "<img src='/static/logo-surviv.png' width='120'/>",
+    "<img src='/static/logo.png' width='120'/>",
     unsafe_allow_html=True
 )
 
