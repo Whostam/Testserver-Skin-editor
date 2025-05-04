@@ -5,14 +5,16 @@ import io, random, json, base64
 # ─── Page Config & Branding ────────────────────────────────────────────────
 st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
 
-# Favicon + Sidebar logo (served from /static/)
+# Favicon (served from /static/)
 st.markdown(
     "<link rel='icon' href='/static/logo-surviv.png' />",
     unsafe_allow_html=True
 )
-st.sidebar.markdown(
-    "<img src='/static/logo-surviv.png' width='100'/>",
-    unsafe_allow_html=True
+# Sidebar logo image
+st.sidebar.image(
+    '/static/logo-surviv.png',
+    width=100,
+    caption=''  # optional caption
 )
 
 # Blurred background behind UI only
@@ -37,6 +39,7 @@ except:
     pass
 
 st.title("🎨 Survev.io Skin Editor")
+st.write("Use the sidebar to customize and see live updates immediately.")("🎨 Survev.io Skin Editor")
 st.write("Use the sidebar to customize and see live updates immediately.")
 
 # ─── Helpers ────────────────────────────────────────────────────────────────
