@@ -5,10 +5,13 @@ import io, random, json
 # ─── Page config & Branding ────────────────────────────────────────────────
 st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
 
-# Sidebar logo (served from /static/)
-st.sidebar.image('/static/logo-surviv.png', width=120)
+# Sidebar logo via HTML (served from /static/)
+st.sidebar.markdown(
+    "<img src='/static/logo-surviv.png' width='120'/>",
+    unsafe_allow_html=True
+)
 
-# Blurred background CSS
+# Blurred background CSS (served from /static/)
 st.markdown(
     """
     <style>
