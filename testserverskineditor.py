@@ -33,11 +33,8 @@ try:
             filter: blur(8px) brightness(0.7);
             z-index: -1;
           }
-          .block-container, .sidebar-content {
-            background-color: #FFFFFF !important;
-            padding: 1rem;
-            border-radius: 8px;
-          }
+          /* keep UI panels transparent to show background */
+          /* remove any background override */
         </style>
         """, unsafe_allow_html=True
     )
@@ -126,37 +123,53 @@ hy=st.sidebar.slider('Hands Y',0,300,220)
 bg_file=st.sidebar.file_uploader('Background (PNG)',type='png')
 
 # ─── Build Canvas ───────────────────────────────────────────────────────────
-bg_img=None
+bg_img = None
 if bg_file:
-    bg_img=Image.open(bg_file).convert('RGBA').resize((1024,1024),Image.Resampling.LANCZOS)
-canvas=Image.new('RGBA',(1024,1024),(0,0,0,0))
+    bg_img = Image.open(bg_file).convert('RGBA').resize((1024,1024), Image.Resampling.LANCZOS)
+canvas = Image.new('RGBA', (1024,1024), (0,0,0,0))
 for name,f,c1,c2,p,pc,sw,dr,sp,dw,bl,up,alpha in parts:
+    # radius
     r = 240 if name=='Backpack' else (280 if name=='Body' else 100)
-    cx = 512; cy = 512 + by if name=='Backpack' else (512 if name=='Body' else 512+hy)
-    if name=='Hands':
-        cx = 512 - hx if name=='Hands' else 512 + hx
-        cy = 512 + hy
-    fill_img = get_fill_image(f,c1,c2,2*r).convert('RGBA')
-    pattern=None
-    if   p=='Stripes':  pattern=make_stripes(2*r,pc,sw)
-    elif p=='Spots':    pattern=make_spots(2*r,pc,dr,sp)
-    elif p=='Diagonal': pattern=make_diag(2*r,pc,dw)
-    elif p=='Checker':  pattern=make_check(2*r,pc,bl)
+    # determine centers
+    if name=='Backpack':
+        centers = [(512, 512+by)]
+    elif name=='Body':
+        centers = [(512, 512)]
+    else:
+        centers = [(512-hx, 512+hy), (512+hx, 512+hy)]
+    # base fill
+    fill_img = get_fill_image(f, c1, c2, 2*r).convert('RGBA')
+    # pattern
+    pattern = None
+    if p=='Stripes':  pattern = make_stripes(2*r, pc, sw)
+    elif p=='Spots':  pattern = make_spots(2*r, pc, dr, sp)
+    elif p=='Diagonal': pattern = make_diag(2*r, pc, dw)
+    elif p=='Checker':  pattern = make_check(2*r, pc, bl)
     elif p=='Custom' and up:
-        tile=Image.open(up).convert('RGBA'); ow,oh=tile.size
-        nw=int(2*r*0.2); nh=int(nw*oh/ow)
-        small=tile.resize((nw,nh),Image.Resampling.LANCZOS)
-        pattern=Image.new('RGBA',(2*r,2*r),(0,0,0,0))
-        for yy in range(0,2*r,nh):
-            for xx in range(0,2*r,nw): pattern.paste(small,(xx,yy),small)
+        tile = Image.open(up).convert('RGBA')
+        ow, oh = tile.size
+        nw = int(2*r * 0.2)
+        nh = int(nw * oh / ow)
+        small = tile.resize((nw, nh), Image.Resampling.LANCZOS)
+        pattern = Image.new('RGBA', (2*r, 2*r), (0,0,0,0))
+        for yy in range(0, 2*r, nh):
+            for xx in range(0, 2*r, nw):
+                pattern.paste(small, (xx, yy), small)
+    # overlay
     if pattern:
-        mask = pattern.split()[3].point(lambda px:int(px*alpha))
+        mask = pattern.split()[3].point(lambda px: int(px*alpha))
         pattern.putalpha(mask)
-        fill_img = Image.alpha_composite(fill_img,pattern)
-    m = Image.new('L',(2*r,2*r),0); md=ImageDraw.Draw(m); md.ellipse((0,0,2*r,2*r),fill=255)
-    canvas.paste(fill_img,(cx-r,cy-r),m)
-    ImageDraw.Draw(canvas).ellipse((cx-r,cy-r,cx+r,cy+r),outline=oc,width=ow)
-if bg_img: canvas=Image.alpha_composite(bg_img,canvas)
+        fill_img = Image.alpha_composite(fill_img, pattern)
+    # paste circles and outline
+    for cx, cy in centers:
+        mask = Image.new('L', (2*r, 2*r), 0)
+        md = ImageDraw.Draw(mask)
+        md.ellipse((0,0,2*r,2*r), fill=255)
+        canvas.paste(fill_img, (cx-r, cy-r), mask)
+        ImageDraw.Draw(canvas).ellipse((cx-r, cy-r, cx+r, cy+r), outline=oc, width=ow)
+# composite background under
+if bg_img:
+    canvas = Image.alpha_composite(bg_img, canvas)
 
 # ─── Display Preview ─────────────────────────────────────────────────────────
 st.subheader('Preview')
