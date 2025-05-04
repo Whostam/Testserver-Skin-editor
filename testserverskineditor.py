@@ -11,9 +11,10 @@ st.markdown(
     unsafe_allow_html=True
 )
 # Sidebar logo via HTML to support URL
-st.sidebar.markdown(
-    "<img src='/static/logo-surviv.png' width='120'/>",
-    unsafe_allow_html=True
+# Sidebar logo via image() so it uses the static route
+st.sidebar.image(
+    '/static/logo-surviv.png',
+    width=120
 )
 
 # Blurred background behind UI only
@@ -31,6 +32,11 @@ try:
             filter: blur(8px) brightness(0.7);
             z-index: -1;
           }
+          /* make containers transparent so background shows through */
+          .block-container, .sidebar-content {
+            background-color: transparent !important;
+          }
+          }
         </style>
         """, unsafe_allow_html=True
     )
@@ -38,7 +44,7 @@ except:
     pass
 
 st.title("🎨 Survev.io Skin Editor")
-st.write("Use the sidebar to customize and see live updates immediately.")("🎨 Survev.io Skin Editor")
+
 st.write("Use the sidebar to customize and see live updates immediately.")
 st.write("Use the sidebar to customize and see live updates immediately.")
 
