@@ -30,25 +30,69 @@ def random_color(): return "#%06x" % random.randint(0,0xFFFFFF)
 
 # ─── Helpers ────────────────────────────────────────────────────────────────
 def make_linear_gradient(sz, c1, c2):
-    img=Image.new('RGB',(1,sz)); d=ImageDraw.Draw(img)
-    for y in range(sz): t=y/(sz-1); r=int((1-t)*int(c1[1:3],16)+t*int(c2[1:3],16)); g=int((1-t)*int(c1[3:5],16)+t*int(c2[3:5],16)); b=int((1-t)*int(c1[5:7],16)+t*int(c2[5:7],16)); d.point((0,y),(r,g,b))
-    return img.resize((sz,sz))
-def make_radial_gradient(sz,c1,c2):
-    img=Image.new('RGB',(sz,sz));d=ImageDraw.Draw(img);cx=cy=sz//2;maxr=(2**0.5)*(sz/2)
+    img = Image.new('RGB', (1, sz))
+    d = ImageDraw.Draw(img)
     for y in range(sz):
-      for x in range(sz): d_ = ((x-cx)**2+(y-cy)**2)**0.5/maxr; t=min(d_,1); r=int((1-t)*int(c1[1:3],16)+t*int(c2[1:3],16)); g=int((1-t)*int(c1[3:5],16)+t*int(c2[3:5],16)); b=int((1-t)*int(c1[5:7],16)+t*int(c2[5:7],16)); d.point((x,y),(r,g,b))
+        t = y / (sz - 1)
+        r = int((1-t)*int(c1[1:3],16) + t*int(c2[1:3],16))
+        g = int((1-t)*int(c1[3:5],16) + t*int(c2[3:5],16))
+        b = int((1-t)*int(c1[5:7],16) + t*int(c2[5:7],16))
+        d.point((0,y), fill=(r,g,b))
+    return img.resize((sz, sz))
+
+def make_radial_gradient(sz, c1, c2):
+    img = Image.new('RGB', (sz, sz))
+    d = ImageDraw.Draw(img)
+    cx, cy = sz//2, sz//2
+    maxr = (2**0.5) * (sz/2)
+    for y in range(sz):
+        for x in range(sz):
+            d_norm = ((x-cx)**2 + (y-cy)**2)**0.5 / maxr
+            t = min(d_norm, 1.0)
+            r = int((1-t)*int(c1[1:3],16) + t*int(c2[1:3],16))
+            g = int((1-t)*int(c1[3:5],16) + t*int(c2[3:5],16))
+            b = int((1-t)*int(c1[5:7],16) + t*int(c2[5:7],16))
+            d.point((x,y), fill=(r,g,b))
     return img
 
-def get_fill_image(ftype,c1,c2,sz): return Image.new('RGB',(sz,sz),c1) if ftype=='Solid' else (make_linear_gradient(sz,c1,c2) if ftype=='Linear' else make_radial_gradient(sz,c1,c2))
+def get_fill_image(ftype, c1, c2, sz):
+    if ftype == "Solid":
+        return Image.new("RGB", (sz, sz), c1)
+    if ftype == "Linear":
+        return make_linear_gradient(sz, c1, c2)
+    return make_radial_gradient(sz, c1, c2)
 
-def make_stripes(sz,color,w): p=Image.new('RGBA',(sz,sz),(0,0,0,0));d=ImageDraw.Draw(p)
-  [d.rectangle([x,0,x+w,sz],fill=color) for x in range(0,sz,w*2)];return p
-def make_spots(sz,color,dr,sp): p=Image.new('RGBA',(sz,sz),(0,0,0,0));d=ImageDraw.Draw(p)
- [d.ellipse([x,y,x+dr,y+dr],fill=color) for y in range(0,sz,sp) for x in range(0,sz,sp)];return p
-def make_diag(sz,color,w):p=Image.new('RGBA',(sz,sz),(0,0,0,0));d=ImageDraw.Draw(p)
- [d.line([(x,sz),(x+sz,0)],fill=color,width=w) for x in range(-sz,sz,w*2)];return p
-def make_check(sz,color,b):p=Image.new('RGBA',(sz,sz),(0,0,0,0));d=ImageDraw.Draw(p)
- [d.rectangle([x,y,x+b,y+b],fill=color) for y in range(0,sz,b) for x in range(0,sz,b) if ((x//b+y//b)%2)==0];return p
+# ─── Built-in pattern generators ────────────────────────────────────────────
+def make_stripes(sz, color, w):
+    pat = Image.new("RGBA", (sz, sz), (0,0,0,0))
+    d = ImageDraw.Draw(pat)
+    for x in range(0, sz, w*2):
+        d.rectangle([x, 0, x+w, sz], fill=color)
+    return pat
+
+def make_spots(sz, color, dr, sp):
+    pat = Image.new("RGBA", (sz, sz), (0,0,0,0))
+    d = ImageDraw.Draw(pat)
+    for y in range(0, sz, sp):
+        for x in range(0, sz, sp):
+            d.ellipse([x, y, x+dr, y+dr], fill=color)
+    return pat
+
+def make_diag(sz, color, w):
+    pat = Image.new("RGBA", (sz, sz), (0,0,0,0))
+    d = ImageDraw.Draw(pat)
+    for x in range(-sz, sz, w*2):
+        d.line([(x, sz), (x+sz, 0)], fill=color, width=w)
+    return pat
+
+def make_check(sz, color, b):
+    pat = Image.new("RGBA", (sz, sz), (0,0,0,0))
+    d = ImageDraw.Draw(pat)
+    for y in range(0, sz, b):
+        for x in range(0, sz, b):
+            if ((x//b + y//b) % 2) == 0:
+                d.rectangle([x, y, x+b, y+b], fill=color)
+    return pat
 
 # ─── Pattern Config UI ─────────────────────────────────────────────────────
 with st.sidebar.form('controls'):
@@ -92,10 +136,52 @@ with tabs[2]:
     st.download_button('Download JSON',cfg,'config.json','application/json')
 
 # ─── Draw Canvas ───────────────────────────────────────────────────────────
-canvas = Image.new('RGBA',(1024,1024),(0,0,0,0))
+canvas = Image.new('RGBA', (1024,1024), (0,0,0,0))
 for name,f,c1,c2,p,pc,sw,dr,sp,dw,bl,up,alpha in parts:
-  # draw shapes here… (same logic as above)
-  pass
+    # Base fill
+    fill_img = get_fill_image(f, c1, c2, 2*240 if name=='Backpack' else (2*280 if name=='Body' else 2*100)).convert('RGBA')
+    # Pattern
+    pattern = None
+    r = 240 if name=='Backpack' else (280 if name=='Body' else 100)
+    size = 2*r
+    if p == 'Stripes':
+        pattern = make_stripes(size, pc, sw)
+    elif p == 'Spots':
+        pattern = make_spots(size, pc, dr, sp)
+    elif p == 'Diagonal':
+        pattern = make_diag(size, pc, dw)
+    elif p == 'Checker':
+        pattern = make_check(size, pc, bl)
+    elif p == 'Custom' and up:
+        tile = Image.open(up).convert('RGBA')
+        ow_t, oh_t = tile.size
+        nw = max(1, int(size*0.2))
+        nh = max(1, int(nw * oh_t / ow_t))
+        small = tile.resize((nw, nh), Image.Resampling.LANCZOS)
+        pattern = Image.new('RGBA', (size,size), (0,0,0,0))
+        for y in range(0, size, nh):
+            for x in range(0, size, nw):
+                pattern.paste(small, (x,y), small)
+    # Overlay pattern
+    if pattern:
+        alpha_mask = pattern.split()[3].point(lambda px: int(px * alpha))
+        pattern.putalpha(alpha_mask)
+        fill_img = Image.alpha_composite(fill_img, pattern)
+    # Paste onto canvas
+    # Determine center
+    cx, cy = (512,512+by) if name=='Backpack' else ((512,512) if name=='Body' else ((512-hx,512+hy) if name=='Hands' else (512+hx,512+hy)))
+    mask = Image.new('L', (size,size), 0)
+    md = ImageDraw.Draw(mask)
+    md.ellipse((0,0,size,size), fill=255)
+    canvas.paste(fill_img, (cx-r, cy-r), mask)
+    # Outline
+    ImageDraw.Draw(canvas).ellipse(
+        (cx-r, cy-r, cx+r, cy+r), outline=oc, width=ow
+    )
+# Composite background
+if bg_img:
+    canvas = Image.alpha_composite(bg_img, canvas)
+# Update Preview
+placeholder.image(canvas.resize((256,256), Image.Resampling.LANCZOS))
 
-# (Remaining code omitted for brevity)        # composite pattern over fill
-        fill_img = Image.alpha_composite(fill_img
+# Export tab actions handled above
