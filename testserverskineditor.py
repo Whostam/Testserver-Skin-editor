@@ -17,16 +17,36 @@ except FileNotFoundError:
     # skip if asset missing
     pass
 # Blurred background via CSS
-st.markdown(
-    """
-    <style>
-      .stApp { background: url('main_splash_rivers.png') no-repeat center; background-size: cover; filter: blur(5px) brightness(0.7); }
-      .block-container, .sidebar-content { filter: none; background: rgba(255,255,255,0.8); border-radius: 10px; padding: 1rem; }
-    </style>
-    """, unsafe_allow_html=True
-)
+try:
+    st.markdown(
+        """
+        <style>
+          /* absolutely positioned blurred bg behind UI */
+          .stApp::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('main_splash_rivers.png') no-repeat center;
+            background-size: cover;
+            filter: blur(8px) brightness(0.8);
+            z-index: -1;
+          }
+          /* ensure containers are opaque and on top */
+          .block-container, .sidebar-content {
+            background: rgba(255,255,255,0.85) !important;
+            border-radius: 10px;
+            padding: 1rem;
+          }
+        </style>
+        """, unsafe_allow_html=True
+    )
+except:
+    pass
 
-st.title("🎨 Survev.io Skin Editor")
+st.title("🎨 Survev.io Skin Editor")("🎨 Survev.io Skin Editor")
 st.write("Use tabs below to configure, preview, or export your skin.")
 
 # Utility: random color
