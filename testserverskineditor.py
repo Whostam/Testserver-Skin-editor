@@ -5,34 +5,43 @@ import io, random, json
 # ─── Page config & Branding ────────────────────────────────────────────────
 st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
 
-# Sidebar logo via HTML (served from /static/)
-st.sidebar.markdown(
-    "<img src='/static/logo.png' width='120'/>",
-    unsafe_allow_html=True
-)
+# Embed logo.png (at project root) via base64
+try:
+    with open("logo.png","rb") as f:
+        logo_data = base64.b64encode(f.read()).decode()
+    st.sidebar.markdown(
+        f"<img src='data:image/png;base64,{logo_data}' width='120'/>",
+        unsafe_allow_html=True
+    )
+except Exception:
+    pass
 
-# Blurred background CSS (served from /static/)
-st.markdown(
-    """
-    <style>
-      .stApp::before {
-        content: "";
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: url('/static/main_splash_rivers.png') no-repeat center;
-        background-size: cover;
-        filter: blur(8px) brightness(0.7);
-        z-index: -1;
-      }
-      /* allow background to show through */
-      .block-container, .sidebar-content {
-        background-color: transparent !important;
-      }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# Embed blurred background via inline CSS and base64
+try:
+    with open("main_splash_rivers.png","rb") as f:
+        bg_data = base64.b64encode(f.read()).decode()
+    st.markdown(
+        f"""
+        <style>
+          .stApp::before {{
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: url('data:image/png;base64,{bg_data}') no-repeat center;
+            background-size: cover;
+            filter: blur(8px) brightness(0.7);
+            z-index: -1;
+          }}
+          .block-container, .sidebar-content {{
+            background-color: rgba(255,255,255,0.85) !important;
+          }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+except Exception:
+    pass
 
 # Title and instructions and instructions
 st.title("🎨 Survev.io Skin Editor")
