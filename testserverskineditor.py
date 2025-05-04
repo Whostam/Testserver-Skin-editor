@@ -94,7 +94,23 @@ def make_check(sz, col, b):
             if ((x//b+y//b)%2)==0: d.rectangle([x,y,x+b,y+b],fill=col)
     return pat
 
-# ─── Sidebar Controls ──────────────────────────────────────────────────────
+# ─── Sidebar Controls & Randomizer ──────────────────────────────────────────────────────
+# Randomize button
+if st.sidebar.button("🎲 Randomize Skin"):
+    for nm,def1,def2 in [('Backpack','#A0522D','#8B4513'),('Body','#FFD39F','#FFC071'),('Hands','#A0522D','#8B4513')]:
+        st.session_state[f"{nm}_fill"] = random.choice(['Solid','Linear','Radial'])
+        st.session_state[f"{nm}_c1"]   = random_color()
+        st.session_state[f"{nm}_c2"]   = random_color()
+        st.session_state[f"{nm}_pat"]  = random.choice(['None','Stripes','Spots','Diagonal','Checker','Custom'])
+        st.session_state[f"{nm}_pc"]   = random_color()
+        st.session_state[f"{nm}_sw"]   = random.randint(5,50)
+        st.session_state[f"{nm}_dr"]   = random.randint(5,30)
+        st.session_state[f"{nm}_sp"]   = random.randint(20,100)
+        st.session_state[f"{nm}_dw"]   = random.randint(5,50)
+        st.session_state[f"{nm}_bl"]   = random.randint(20,80)
+        st.session_state[f"{nm}_alpha"] = round(random.random(),2)
+
+st.sidebar.header('Skin Parts')
 st.sidebar.header('Skin Parts')
 parts = []
 for name,def1,def2 in [('Backpack','#A0522D','#8B4513'),('Body','#FFD39F','#FFC071'),('Hands','#A0522D','#8B4513')]:
