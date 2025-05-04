@@ -15,7 +15,7 @@ try:
     st.sidebar.image('logo-surviv.png', use_column_width=True)
 except FileNotFoundError:
     # skip if asset missing
-    pass('logo-surviv.png', use_column_width=True)
+    pass
 # Blurred background via CSS
 st.markdown(
     """
