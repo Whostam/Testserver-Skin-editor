@@ -10,11 +10,10 @@ st.markdown(
     "<link rel='icon' href='/static/logo-surviv.png' />",
     unsafe_allow_html=True
 )
-# Sidebar logo via HTML to support URL
-# Sidebar logo via image() so it uses the static route
-st.sidebar.image(
-    '/static/logo-surviv.png',
-    width=120
+# Sidebar logo via HTML <img> tag
+st.sidebar.markdown(
+    "<img src='/static/logo-surviv.png' width='100' />",
+    unsafe_allow_html=True
 )
 
 # Blurred background behind UI only
@@ -36,7 +35,6 @@ try:
           .block-container, .sidebar-content {
             background-color: transparent !important;
           }
-          }
         </style>
         """, unsafe_allow_html=True
     )
@@ -45,7 +43,6 @@ except:
 
 st.title("🎨 Survev.io Skin Editor")
 
-st.write("Use the sidebar to customize and see live updates immediately.")
 st.write("Use the sidebar to customize and see live updates immediately.")
 
 # ─── Helpers ────────────────────────────────────────────────────────────────
