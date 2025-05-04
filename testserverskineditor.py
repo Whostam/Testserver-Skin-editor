@@ -25,15 +25,16 @@ st.markdown(
         filter: blur(8px) brightness(0.7);
         z-index: -1;
       }
+      /* allow background to show through */
       .block-container, .sidebar-content {
-        background-color: rgba(255,255,255,0.85) !important;
+        background-color: transparent !important;
       }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# Title and instructions
+# Title and instructions and instructions
 st.title("🎨 Survev.io Skin Editor")
 st.write("Use the sidebar (or the 🎲 Randomize button) to customize or auto-generate a skin.")
 
