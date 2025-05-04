@@ -10,11 +10,10 @@ st.markdown(
     "<link rel='icon' href='/static/logo-surviv.png' />",
     unsafe_allow_html=True
 )
-# Sidebar logo image
-st.sidebar.image(
-    '/static/logo-surviv.png',
-    width=100,
-    caption=''  # optional caption
+# Sidebar logo via HTML to support URL
+st.sidebar.markdown(
+    "<img src='/static/logo-surviv.png' width='120'/>",
+    unsafe_allow_html=True
 )
 
 # Blurred background behind UI only
@@ -40,6 +39,7 @@ except:
 
 st.title("🎨 Survev.io Skin Editor")
 st.write("Use the sidebar to customize and see live updates immediately.")("🎨 Survev.io Skin Editor")
+st.write("Use the sidebar to customize and see live updates immediately.")
 st.write("Use the sidebar to customize and see live updates immediately.")
 
 # ─── Helpers ────────────────────────────────────────────────────────────────
@@ -190,20 +190,43 @@ st.subheader('Preview')
 st.image(canvas.resize((200,200),Image.Resampling.LANCZOS))
 
 # ─── Export ─────────────────────────────────────────────────────────────────
-col1,col2=st.columns(2)
-with col1:
-    res=st.selectbox('Resolution',[128,256,512,1024],index=1)
-    fmt=st.selectbox('Format',['PNG','JPEG','SVG'])
-    buf=io.BytesIO(); out=canvas.resize((res,res),Image.Resampling.LANCZOS)
-    if fmt=='JPEG': out.convert('RGB').save(buf,'JPEG'); mime='image/jpeg'
-    else: out.save(buf,'PNG'); mime='image/png'
+st.subheader('Export')
+# Three columns: resolution, format, downloads
+col_res, col_fmt, col_btns = st.columns([1,1,2])
+# Resolution
+with col_res:
+    res = st.selectbox('Resolution',[128,256,512,1024],index=1)
+# Format
+with col_fmt:
+    fmt = st.selectbox('Format',['PNG','JPEG','SVG'])
+# Download buttons
+with col_btns:
+    btn1, btn2 = st.columns(2)
+    # Prepare image buffer
+    buf = io.BytesIO()
+    out = canvas.resize((res,res), Image.Resampling.LANCZOS)
+    mime = 'image/png'
+    if fmt == 'JPEG':
+        out.convert('RGB').save(buf, 'JPEG')
+        mime = 'image/jpeg'
+    else:
+        out.save(buf, 'PNG')
     buf.seek(0)
-    st.download_button('Download Skin', data=buf, file_name=f'skin.{fmt.lower()}', mime=mime)
-with col2:
-    cfg={
-        name:{'fill':f,'c1':c1,'c2':c2,'pattern':p,'pattern_col':pc,'sw':sw,'dr':dr,'sp':sp,'dw':dw,'bl':bl,'alpha':alpha}
+    # Download skin
+    btn1.download_button(
+        'Download Skin', data=buf,
+        file_name=f'skin.{fmt.lower()}', mime=mime
+    )
+    # Prepare JSON
+    config = {
+        name: {'fill':f,'c1':c1,'c2':c2,'pattern':p,'pattern_col':pc,
+               'sw':sw,'dr':dr,'sp':sp,'dw':dw,'bl':bl,'alpha':alpha}
         for name,f,c1,c2,p,pc,sw,dr,sp,dw,bl,up,alpha in parts
     }
-    cfg['outline']={'color':oc,'width':ow}
-    cfg['offsets']={'by':by,'hx':hx,'hy':hy}
-    st.download_button('Download JSON', data=json.dumps(cfg,indent=2), file_name='config.json', mime='application/json')
+    config['outline'] = {'color':oc,'width':ow}
+    config['offsets'] = {'by':by,'hx':hx,'hy':hy}
+    # Download JSON
+    btn2.download_button(
+        'Download JSON', data=json.dumps(config,indent=2),
+        file_name='config.json', mime='application/json'
+    )
