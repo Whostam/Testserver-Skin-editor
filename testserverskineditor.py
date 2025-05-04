@@ -7,7 +7,7 @@ st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
 
 # Favicon + Sidebar logo
 try:
-    logo_path = ".streamlit/static/logo-surviv.png"
+    logo_path = ".streamlit/static/images/logo-surviv.png"
     logo_bytes = open(logo_path, "rb").read()
     logo_b64 = base64.b64encode(logo_bytes).decode()
     st.markdown(
@@ -28,7 +28,7 @@ try:
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: url('/static/main_splash_rivers.png') no-repeat center;
+            background: url('/static/images/main_splash_rivers.png') no-repeat center;
             background-size: cover;
             filter: blur(8px) brightness(0.7);
             z-index: -1;
