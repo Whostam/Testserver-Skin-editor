@@ -6,7 +6,7 @@ import io, random, json, base64
 st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
 # Favicon and logo (optional)
 try:
-    logo_bytes = open('logo-surviv.png','rb').read()
+    logo_bytes = open('.streamlit/static/logo-surviv.png','rb').read()
     logo_b64 = base64.b64encode(logo_bytes).decode()
     st.markdown(
         f"<link rel='icon' href='data:image/png;base64,{logo_b64}' />",
@@ -29,7 +29,7 @@ try:
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('main_splash_rivers.png') no-repeat center;
+            background: url('/static/main_splash_rivers.png') no-repeat center;
             background-size: cover;
             filter: blur(8px) brightness(0.8);
             z-index: -1;
