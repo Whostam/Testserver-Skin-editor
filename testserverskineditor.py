@@ -5,50 +5,53 @@ import io, random, json, base64
 # ─── Page config & Branding ────────────────────────────────────────────────
 st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
 
-# Embed sidebar logo via base64 (try multiple possible paths)
-logo_paths = ["logo.png", "logo-surviv.png", ".streamlit/static/logo-surviv.png"]
-for lp in logo_paths:
-    try:
-        with open(lp, "rb") as f:
-            logo_data = base64.b64encode(f.read()).decode()
-        st.sidebar.markdown(
-            f"<img src='data:image/png;base64,{logo_data}' width='120'/>",
-            unsafe_allow_html=True
-        )
-        break
-    except FileNotFoundError:
-        continue
-
-# Embed blurred background via inline CSS and base64 (try multiple paths)
-
-# Embed blurred background via inline CSS and base64
+# Attempt to load and embed logo.png from repo root
+logo_data = None
 try:
-    with open("main_splash_rivers.png","rb") as f:
+    with open('logo.png','rb') as f:
+        logo_data = base64.b64encode(f.read()).decode()
+except FileNotFoundError:
+    pass
+if logo_data:
+    st.sidebar.markdown(
+        f"<img src='data:image/png;base64,{logo_data}' width='120' style='margin-bottom:20px;'/>",
+        unsafe_allow_html=True
+    )
+
+# Attempt to load and embed background image as blurred CSS
+bg_data = None
+try:
+    with open('main_splash_rivers.png','rb') as f:
         bg_data = base64.b64encode(f.read()).decode()
+except FileNotFoundError:
+    pass
+if bg_data:
     st.markdown(
         f"""
         <style>
           .stApp::before {{
-            content: "";
+            content: '';
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: url('data:image/png;base64,{bg_data}') no-repeat center;
+            background-image: url('data:image/png;base64,{bg_data}');
             background-size: cover;
+            background-position: center;
             filter: blur(8px) brightness(0.7);
             z-index: -1;
           }}
+          /* make main and sidebar transparent */
           .block-container, .sidebar-content {{
-            background-color: rgba(255,255,255,0.85) !important;
+            background-color: transparent !important;
           }}
         </style>
         """,
         unsafe_allow_html=True
     )
-except Exception:
-    pass
 
-# Title and instructions and instructions
+# Title and instructions
+st.title("🎨 Survev.io Skin Editor")
+st.write("Use the sidebar (or the 🎲 Randomize button) to customize or auto-generate a skin.") and instructions
 st.title("🎨 Survev.io Skin Editor")
 st.write("Use the sidebar (or the 🎲 Randomize button) to customize or auto-generate a skin.")
 
