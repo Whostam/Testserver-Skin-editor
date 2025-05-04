@@ -5,16 +5,21 @@ import io, random, json, base64
 # ─── Page config & Branding ────────────────────────────────────────────────
 st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
 
-# Embed logo.png (at project root) via base64
-try:
-    with open("logo.png","rb") as f:
-        logo_data = base64.b64encode(f.read()).decode()
-    st.sidebar.markdown(
-        f"<img src='data:image/png;base64,{logo_data}' width='120'/>",
-        unsafe_allow_html=True
-    )
-except Exception:
-    pass
+# Embed sidebar logo via base64 (try multiple possible paths)
+logo_paths = ["logo.png", "logo-surviv.png", ".streamlit/static/logo-surviv.png"]
+for lp in logo_paths:
+    try:
+        with open(lp, "rb") as f:
+            logo_data = base64.b64encode(f.read()).decode()
+        st.sidebar.markdown(
+            f"<img src='data:image/png;base64,{logo_data}' width='120'/>",
+            unsafe_allow_html=True
+        )
+        break
+    except FileNotFoundError:
+        continue
+
+# Embed blurred background via inline CSS and base64 (try multiple paths)
 
 # Embed blurred background via inline CSS and base64
 try:
