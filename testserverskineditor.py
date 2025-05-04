@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image, ImageDraw
-import io, random, json
+import io, random, json, base64
 
 # ─── Page config & Branding ────────────────────────────────────────────────
 st.set_page_config(page_title="Survev.io Skin Editor", layout="wide")
